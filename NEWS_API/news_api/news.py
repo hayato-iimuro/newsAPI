@@ -2,6 +2,22 @@ import requests
 import json
 import os
 from dotenv import load_dotenv
+import argparse
+
+
+
+
+
+parser = argparse.ArgumentParser(description="サンプル")
+
+parser.add_argument('--q', type=str, default="(Google OR Amazon) AND Cloud", help='ニュースのキーワード')
+parser.add_argument('--from_', type=str, default="2026-04-01T00:00:00", help="入力した時刻以降のニュースから抜粋")
+parser.add_argument('--to', type=str, default="2026-04-28T00:00:00", help='入力した時刻以前のニュースから抜粋')
+parser.add_argument('--pageSize', type=int, default=5, help='取得したいニュースの件数')
+
+args = parser.parse_args()
+
+
 
 load_dotenv()
 
@@ -11,14 +27,21 @@ SLACK_WEBHOOK_URL = os.getenv("Slack_Webhook_URL")
 
 BASE_URL = "https://newsapi.org/v2/everything"  # NewsAPIのエンドポイント
 
+
+
+
+
+
 # パラメータ設定
 params = {
-    "q": "(Google OR Amazon OR Anthropic) AND Cloud", # キーワード
-    "from": "2026-04-01T00:00:00",
-    "to": "2026-04-28T00:00:00",
-    "pageSize": 5,                       # 取得件数
+    "q": args.q, # キーワード
+    "from": args.from_,
+    "to": args.to,
+    "pageSize": args.pageSize,                       # 取得件数
     "apiKey": API_KEY
 }
+
+
 
 # APIリクエスト
 response = requests.get(BASE_URL, params=params)
